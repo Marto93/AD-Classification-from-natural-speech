@@ -19,11 +19,8 @@ from keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
 from keras.applications.vgg16 import VGG16 
 
 
-
-
-os.chdir = 'C:/Users/marto/Desktop/Datasets'
-train_dir = 'C:/Users/marto/Desktop/Datasets/2. Dem@Care_Resized/Train'
-validation_dir = 'C:/Users/marto/Desktop/Datasets/2. Dem@Care_Resized/Val'
+train_dir = 'train_dir'
+validation_dir = 'val_dir'
 
 ############################### IMPORTING DATA ################################
 
@@ -65,7 +62,7 @@ train_labels = np.concatenate((train_labels_0, train_labels_1), axis = 0)
 val_data = np.concatenate((val_imgs_0, val_imgs_1), axis = 0)
 val_labels = np.concatenate((val_labels_0, val_labels_1), axis = 0)
 
-#%%
+
 ############################## DATA GENERATOR #################################
 
 input_shape = (224,224,3)
@@ -81,7 +78,6 @@ val_generator = val_datagen.flow(val_data,
                                  val_labels)
 
 
-#%%
 ############################ CONVOLUTIONAL BASE ###############################
 
 vgg_model = VGG16(weights='imagenet',
@@ -108,7 +104,7 @@ for layer in vgg_model.layers:
 layers = [(layer, layer.name, layer.trainable) for layer in vgg_model.layers]
 pd.DataFrame(layers, columns=['Layer Type', 'Layer Name', 'Layer Trainable']) 
 
-#%%
+
 ############################ FEATURES EXTRACTION ##############################
 
 
@@ -122,7 +118,7 @@ val_feat_vgg = get_bottleneck_features(vgg_model, val_data)
 print('Train Bottleneck Features:', train_feat_vgg.shape, 
       '\tValidation Bottleneck Features:', val_feat_vgg.shape)
 
-#%%
+
 ########################### CLASSIFIER CREATION ###############################
 
 import keras_metrics as km
@@ -146,6 +142,7 @@ for train, val in kfold.split(train_feat_vgg, train_labels):
     model.add(layers.Dense(1, activation='sigmoid'))
     
     # Compile model
+    
     model.compile(optimizer = optimizers.Adam(lr=1e-4),
                   loss='binary_crossentropy',
                   metrics=['acc', km.binary_precision(), km.binary_recall()])
