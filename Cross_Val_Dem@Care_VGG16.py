@@ -17,7 +17,7 @@ from keras.preprocessing.image import ImageDataGenerator
 # Defining directories, hight/width of images and Sample (Train/Val) size
 
 train_dir = 'insert_train_directory'
-val_dir = 'C:/Users/marto/Desktop/Datasets/2. Dem@Care_Resized/Val'
+val_dir = 'insert_val_directory'
 
 img_width, img_height, channels = 224, 224, 3
 train_size, val_size = 436, 48
